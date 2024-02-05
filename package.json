@@ -1,0 +1,29 @@
+{
+  "name": "players",
+  "version": "1.0.0",
+  "description": "Anyone can create a list of their favorite player",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ZTanvir/players.git"
+  },
+  "keywords": [
+    "Nodejs",
+    "Express",
+    "Mongodb",
+    "React"
+  ],
+  "author": "Zahirul Islam Tanvir",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/ZTanvir/players/issues"
+  },
+  "homepage": "https://github.com/ZTanvir/players#readme",
+  "devDependencies": {
+    "morgan": "^1.10.0",
+    "nodemon": "^3.0.3"
+  }
+}
