@@ -4,8 +4,8 @@ const playerSchema = new mongoose.Schema({
   name: { type: String, required: true },
   league: { type: String, required: true },
   Description: { type: String, required: true },
-  Like: Number,
-  Dislike: Number,
+  Likes: Number,
+  Dislikes: Number,
 });
 
 playerSchema.set("toJSON", {

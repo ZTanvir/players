@@ -3,6 +3,7 @@ const app = express();
 const mongoose = require("mongoose");
 const config = require("./utils/config");
 const logger = require("./utils/logger");
+const playerRoute = require("./controllers/players");
 
 mongoose.set("strictQuery", false);
 
@@ -16,6 +17,8 @@ mongoose
   .catch((error) => {
     logger.error("Error connecting to mongodb", error.message);
   });
+
+app.use("/api/player", playerRoute);
 
 app.get("/", (req, res) => {
   res.end("<h1>Hello players<h1>");
