@@ -62,4 +62,14 @@ playerRoute.put("/:id", async (req, res) => {
   }
 });
 
+playerRoute.delete("/:id", async (req, res) => {
+  const playerId = req.params.id;
+  try {
+    await Player.findByIdAndDelete(playerId);
+    res.status(204).end();
+  } catch (error) {
+    res.status(400).json({ error: "Player not deleted" });
+  }
+});
+
 module.exports = playerRoute;
