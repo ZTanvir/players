@@ -11,7 +11,7 @@ playerRoute.get("/", async (req, res) => {
 });
 
 playerRoute.get("/:id", async (req, res) => {
-  const playerId = request.params.id;
+  const playerId = req.params.id;
   try {
     const player = await Player.findById(playerId);
     res.json(player);
@@ -41,7 +41,24 @@ playerRoute.post("/", async (req, res) => {
     const newPlayer = await player.save();
     res.status(201).json(newPlayer);
   } catch (error) {
-    res.status(404).json({ error: "Player not added" });
+    res.status(400).json({ error: "Player not added" });
+  }
+});
+
+playerRoute.put("/:id", async (req, res) => {
+  // update like and dislike
+  const playerId = req.params.id;
+  const { name, league, description, likes, dislikes } = req.body;
+  const playerInfo = { name, league, description, likes, dislikes };
+
+  try {
+    console.log(playerId, playerInfo);
+    const updatePlayer = await Player.findByIdAndUpdate(playerId, playerInfo, {
+      new: true,
+    });
+    res.status(201).json(updatePlayer);
+  } catch (error) {
+    res.status(400).json({ error: "Player not updated" });
   }
 });
 
