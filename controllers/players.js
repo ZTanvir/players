@@ -18,4 +18,31 @@ playerRoute.get("/:id", async (req, res) => {
   } catch (error) {}
 });
 
+playerRoute.post("/", async (req, res) => {
+  const { name, league, description } = req.body;
+
+  if (name === undefined) {
+    return res.status(400).json({ error: "Player name not found" });
+  }
+  if (league === undefined) {
+    return res.status(400).json({ error: "Player league not found" });
+  }
+  if (description === undefined) {
+    return res.status(400).json({ error: "Player description not found" });
+  }
+  const player = new Player({
+    name,
+    league,
+    description,
+    likes: 0,
+    dislikes: 0,
+  });
+  try {
+    const newPlayer = await player.save();
+    res.status(201).json(newPlayer);
+  } catch (error) {
+    res.status(404).json({ error: "Player not added" });
+  }
+});
+
 module.exports = playerRoute;

@@ -17,7 +17,7 @@ mongoose
   .catch((error) => {
     logger.error("Error connecting to mongodb", error.message);
   });
-
+app.use(express.json());
 app.use("/api/player", playerRoute);
 
 app.get("/", (req, res) => {

@@ -3,9 +3,9 @@ const mongoose = require("mongoose");
 const playerSchema = new mongoose.Schema({
   name: { type: String, required: true },
   league: { type: String, required: true },
-  Description: { type: String, required: true },
-  Likes: Number,
-  Dislikes: Number,
+  description: { type: String, required: true },
+  likes: Number,
+  dislikes: Number,
 });
 
 playerSchema.set("toJSON", {

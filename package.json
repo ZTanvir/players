@@ -9,7 +9,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/ZTanvir/players.git"
+    "url": "https://github.com/ZTanvir/players.git"
   },
   "keywords": [
     "Nodejs",
