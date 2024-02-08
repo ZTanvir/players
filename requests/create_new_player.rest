@@ -2,7 +2,7 @@ POST http://localhost:3000/api/player
 Content-Type: application/json
 
 {
-    "name":"Mohamed Salah",
+    "name":"Mohamed Salah2",
     "league":"Epl",
     "description":"Mohamed Salah Hamed Mahrous Ghaly, known as Mohamed Salah or Mo Salah, is an Egyptian professional footballer who plays as a right winger or forward for Premier League club Liverpool and captains the Egypt national team"
 }
