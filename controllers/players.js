@@ -1,7 +1,5 @@
 const playerRoute = require("express").Router();
 const Player = require("../models/player");
-const logger = require("../utils/logger");
-const middleware = require("../utils/middleware");
 
 playerRoute.get("/", async (req, res) => {
   try {
@@ -10,26 +8,23 @@ playerRoute.get("/", async (req, res) => {
   } catch (error) {}
 });
 
-playerRoute.get("/:id", async (req, res) => {
+playerRoute.get("/:id", async (req, res, next) => {
   const playerId = req.params.id;
   try {
-    const player = await Player.findById(playerId);
-    res.json(player);
-  } catch (error) {}
+    if (playerId) {
+      const player = await Player.findById(playerId);
+      res.status(200).json(player);
+    } else {
+      res.status(404).end();
+    }
+  } catch (error) {
+    next(error);
+  }
 });
 
-playerRoute.post("/", async (req, res) => {
+playerRoute.post("/", async (req, res, next) => {
   const { name, league, description } = req.body;
 
-  if (name === undefined) {
-    return res.status(400).json({ error: "Player name not found" });
-  }
-  if (league === undefined) {
-    return res.status(400).json({ error: "Player league not found" });
-  }
-  if (description === undefined) {
-    return res.status(400).json({ error: "Player description not found" });
-  }
   const player = new Player({
     name,
     league,
@@ -41,34 +36,33 @@ playerRoute.post("/", async (req, res) => {
     const newPlayer = await player.save();
     res.status(201).json(newPlayer);
   } catch (error) {
-    res.status(400).json({ error: "Player not added" });
+    next(error);
   }
 });
 
-playerRoute.put("/:id", async (req, res) => {
+playerRoute.put("/:id", async (req, res, next) => {
   // update like and dislike
   const playerId = req.params.id;
   const { name, league, description, likes, dislikes } = req.body;
   const playerInfo = { name, league, description, likes, dislikes };
 
   try {
-    console.log(playerId, playerInfo);
     const updatePlayer = await Player.findByIdAndUpdate(playerId, playerInfo, {
       new: true,
     });
     res.status(201).json(updatePlayer);
   } catch (error) {
-    res.status(400).json({ error: "Player not updated" });
+    next(error);
   }
 });
 
-playerRoute.delete("/:id", async (req, res) => {
+playerRoute.delete("/:id", async (req, res, next) => {
   const playerId = req.params.id;
   try {
     await Player.findByIdAndDelete(playerId);
     res.status(204).end();
   } catch (error) {
-    res.status(400).json({ error: "Player not deleted" });
+    next(error);
   }
 });
 
