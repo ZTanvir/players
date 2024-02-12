@@ -13,9 +13,10 @@ playerRoute.get("/:id", async (req, res, next) => {
   try {
     if (playerId) {
       const player = await Player.findById(playerId);
-      res.status(200).json(player);
-    } else {
-      res.status(404).end();
+      if (!player) {
+        return res.status(404).end();
+      }
+      return res.status(200).json(player);
     }
   } catch (error) {
     next(error);

@@ -32,7 +32,7 @@ describe("view a specific player", () => {
     const players = await testHelper.playersInDb();
     const singlePlayer = players[0];
 
-    api
+    await api
       .get(`/api/player/${singlePlayer.id}`)
       .expect(200)
       .expect("Content-type", /application\/json/);
@@ -41,13 +41,36 @@ describe("view a specific player", () => {
   test("fail with status 404 when player not exist", async () => {
     const id = await testHelper.nonExistingId();
 
-    api.get(`/api/player/${id}`).expect(404);
+    await api.get(`/api/player/${id}`).expect(404);
   });
 
-  test("fail with 400 when player id is invalid", async () => {
+  test("fail with 400 when player id is malformatted", async () => {
     const sampleId = "abcd12345433fdsfdf";
+    await api.get(`/api/player/${sampleId}`).expect(400);
+  });
+});
 
-    api.get(`api/player/${sampleId}`).expect(400);
+describe("addition of new player", () => {
+  const validPlayer = {
+    name: "Bukayo Saka",
+    league: "epl",
+    description:
+      "Bukayo Ayoyinka Temidayo Saka is an English professional footballer who plays as a right winger for Premier League club Arsenal and the England national team.",
+  };
+
+  test("new player data return as json", async () => {
+    await api
+      .post(`/api/player`)
+      .send(validPlayer)
+      .expect(201)
+      .expect("Content-type", /application\/json/);
+  });
+
+  test("successfully add a new player", async () => {
+    const playersBeforeAddOne = await testHelper.playersInDb();
+    await api.post(`/api/player`).send(validPlayer);
+    const playersAfterAddOne = await testHelper.playersInDb();
+    expect(playersAfterAddOne).toHaveLength(playersBeforeAddOne.length + 1);
   });
 });
 
