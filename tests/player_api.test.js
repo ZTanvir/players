@@ -27,6 +27,30 @@ describe("when there is some player saved", () => {
   });
 });
 
+describe("view a specific player", () => {
+  test("single player data return as json", async () => {
+    const players = await testHelper.playersInDb();
+    const singlePlayer = players[0];
+
+    api
+      .get(`/api/player/${singlePlayer.id}`)
+      .expect(200)
+      .expect("Content-type", /application\/json/);
+  });
+
+  test("fail with status 404 when player not exist", async () => {
+    const id = await testHelper.nonExistingId();
+
+    api.get(`/api/player/${id}`).expect(404);
+  });
+
+  test("fail with 400 when player id is invalid", async () => {
+    const sampleId = "abcd12345433fdsfdf";
+
+    api.get(`api/player/${sampleId}`).expect(400);
+  });
+});
+
 afterAll(async () => {
   await mongoose.connection.close();
 });

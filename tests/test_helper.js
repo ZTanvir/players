@@ -15,12 +15,27 @@ const initilizePlayers = [
   },
 ];
 
+const nonExistingId = async () => {
+  const player = new Player({
+    name: "Declan Rice",
+    league: "epl",
+    description:
+      "Declan Rice is an English professional footballer who plays as a defensive midfielder for Premier League club Arsenal and the England national team. Rice began his professional career at West Ham United, having been released by Chelsea's academy, and established himself as a key first-team player by 2017.",
+  });
+
+  await player.save();
+  await Player.deleteOne({ name: "Declan Rice" });
+
+  return player._id.toString();
+};
+
 const playersInDb = async () => {
   const players = await Player.find({});
   return players.map((player) => player.toJSON());
 };
 
 module.exports = {
+  nonExistingId,
   initilizePlayers,
   playersInDb,
 };
