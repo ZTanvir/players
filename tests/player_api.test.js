@@ -72,6 +72,13 @@ describe("addition of new player", () => {
     const playersAfterAddOne = await testHelper.playersInDb();
     expect(playersAfterAddOne).toHaveLength(playersBeforeAddOne.length + 1);
   });
+
+  test("added player name exist in database", async () => {
+    await api.post(`/api/player`).send(validPlayer);
+    const playerList = await testHelper.playersInDb();
+    const playersName = playerList.map((player) => player.name);
+    expect(playersName).toContain("Bukayo Saka");
+  });
 });
 
 afterAll(async () => {
