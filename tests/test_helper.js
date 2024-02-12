@@ -1,3 +1,5 @@
+const Player = require("../models/player");
+
 const initilizePlayers = [
   {
     name: "Mohamed Salah",
@@ -13,6 +15,12 @@ const initilizePlayers = [
   },
 ];
 
+const playersInDb = async () => {
+  const players = await Player.find({});
+  return players.map((player) => player.toJSON());
+};
+
 module.exports = {
   initilizePlayers,
+  playersInDb,
 };
