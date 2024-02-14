@@ -87,6 +87,27 @@ describe("when there is some player saved", () => {
 
       await api.delete(`/api/player/${playerId}`).expect(204);
     });
+
+    test("remove an existing player", async () => {
+      const players = await testHelper.playersInDb();
+      const playerId = players[0].id;
+
+      await api.delete(`/api/player/${playerId}`);
+      const playersAfterDelete = await testHelper.playersInDb();
+      expect(playersAfterDelete).toHaveLength(players.length - 1);
+    });
+
+    test("removed player don't exist", async () => {
+      const players = await testHelper.playersInDb();
+      const playerId = players[0].id;
+      const playerName = players[0].name;
+
+      await api.delete(`/api/player/${playerId}`);
+      const playersAfterDelete = await testHelper.playersInDb();
+      const playersName = playersAfterDelete.map((player) => player.name);
+
+      expect(playersName).not.toContain(playerName);
+    });
   });
 });
 
