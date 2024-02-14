@@ -25,59 +25,68 @@ describe("when there is some player saved", () => {
     const playersName = response.body.map((player) => player.name);
     expect(playersName).toContain("Mohamed Salah");
   });
-});
 
-describe("view a specific player", () => {
-  test("single player data return as json", async () => {
-    const players = await testHelper.playersInDb();
-    const singlePlayer = players[0];
+  describe("view a specific player", () => {
+    test("single player data return as json", async () => {
+      const players = await testHelper.playersInDb();
+      const singlePlayer = players[0];
 
-    await api
-      .get(`/api/player/${singlePlayer.id}`)
-      .expect(200)
-      .expect("Content-type", /application\/json/);
+      await api
+        .get(`/api/player/${singlePlayer.id}`)
+        .expect(200)
+        .expect("Content-type", /application\/json/);
+    });
+
+    test("fail with status 404 when player not exist", async () => {
+      const id = await testHelper.nonExistingId();
+
+      await api.get(`/api/player/${id}`).expect(404);
+    });
+
+    test("fail with 400 when player id is malformatted", async () => {
+      const sampleId = "abcd12345433fdsfdf";
+      await api.get(`/api/player/${sampleId}`).expect(400);
+    });
   });
 
-  test("fail with status 404 when player not exist", async () => {
-    const id = await testHelper.nonExistingId();
+  describe("addition of new player", () => {
+    const validPlayer = {
+      name: "Bukayo Saka",
+      league: "epl",
+      description:
+        "Bukayo Ayoyinka Temidayo Saka is an English professional footballer who plays as a right winger for Premier League club Arsenal and the England national team.",
+    };
 
-    await api.get(`/api/player/${id}`).expect(404);
+    test("new player data return as json", async () => {
+      await api
+        .post(`/api/player`)
+        .send(validPlayer)
+        .expect(201)
+        .expect("Content-type", /application\/json/);
+    });
+
+    test("successfully add a new player", async () => {
+      const playersBeforeAddOne = await testHelper.playersInDb();
+      await api.post(`/api/player`).send(validPlayer);
+      const playersAfterAddOne = await testHelper.playersInDb();
+      expect(playersAfterAddOne).toHaveLength(playersBeforeAddOne.length + 1);
+    });
+
+    test("added player name exist in database", async () => {
+      await api.post(`/api/player`).send(validPlayer);
+      const playerList = await testHelper.playersInDb();
+      const playersName = playerList.map((player) => player.name);
+      expect(playersName).toContain("Bukayo Saka");
+    });
   });
 
-  test("fail with 400 when player id is malformatted", async () => {
-    const sampleId = "abcd12345433fdsfdf";
-    await api.get(`/api/player/${sampleId}`).expect(400);
-  });
-});
+  describe("deletion of a player", () => {
+    test("reponse with status 204 if id is valid", async () => {
+      const players = await testHelper.playersInDb();
+      const playerId = players[0].id;
 
-describe("addition of new player", () => {
-  const validPlayer = {
-    name: "Bukayo Saka",
-    league: "epl",
-    description:
-      "Bukayo Ayoyinka Temidayo Saka is an English professional footballer who plays as a right winger for Premier League club Arsenal and the England national team.",
-  };
-
-  test("new player data return as json", async () => {
-    await api
-      .post(`/api/player`)
-      .send(validPlayer)
-      .expect(201)
-      .expect("Content-type", /application\/json/);
-  });
-
-  test("successfully add a new player", async () => {
-    const playersBeforeAddOne = await testHelper.playersInDb();
-    await api.post(`/api/player`).send(validPlayer);
-    const playersAfterAddOne = await testHelper.playersInDb();
-    expect(playersAfterAddOne).toHaveLength(playersBeforeAddOne.length + 1);
-  });
-
-  test("added player name exist in database", async () => {
-    await api.post(`/api/player`).send(validPlayer);
-    const playerList = await testHelper.playersInDb();
-    const playersName = playerList.map((player) => player.name);
-    expect(playersName).toContain("Bukayo Saka");
+      await api.delete(`/api/player/${playerId}`).expect(204);
+    });
   });
 });
 
